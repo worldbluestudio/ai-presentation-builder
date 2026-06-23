@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import io
 import time
@@ -7,6 +8,11 @@ from pptx import Presentation
 
 from google import genai
 from google.genai import types
+
+# Vercel loads this module as "api.generate", so the sibling "src" package is
+# not on sys.path by default. Add this file's directory (the api/ folder) so the
+# absolute "src.*" imports below resolve at runtime.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from src.theme import get_theme, list_themes
 from src.slide_builder import SLIDE_BUILDERS

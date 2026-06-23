@@ -1,0 +1,13 @@
+[project]
+name = "ai-presentation-builder"
+version = "0.1.0"
+description = "AI Presentation Builder Web App"
+requires-python = ">=3.12"
+dependencies = [
+    "python-pptx==0.6.23",
+    "Pillow==10.2.0",
+    "google-genai==0.3.0",
+]
+
+[tool.vercel]
+entrypoint = "api.generate:handler"
