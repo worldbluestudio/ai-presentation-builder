@@ -17,8 +17,48 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from src.theme import get_theme, list_themes
 from src.slide_builder import SLIDE_BUILDERS
 
+PUBLIC_DIR = os.path.normpath(
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "public")
+)
+
+_CONTENT_TYPES = {
+    ".html": "text/html; charset=utf-8",
+    ".js": "application/javascript; charset=utf-8",
+    ".css": "text/css; charset=utf-8",
+    ".json": "application/json; charset=utf-8",
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".svg": "image/svg+xml",
+    ".ico": "image/x-icon",
+}
+
+
 class handler(BaseHTTPRequestHandler):
-    
+
+    def do_GET(self):
+        # On Vercel this function is the single catch-all entrypoint, so it must
+        # also serve the static frontend bundled from the public/ directory.
+        path = self.path.split("?", 1)[0]
+        if path in ("", "/"):
+            path = "/index.html"
+
+        file_path = os.path.normpath(os.path.join(PUBLIC_DIR, path.lstrip("/")))
+        # Guard against path traversal outside public/.
+        if not file_path.startswith(PUBLIC_DIR) or not os.path.isfile(file_path):
+            self.send_error_response(404, "Not Found")
+            return
+
+        _, ext = os.path.splitext(file_path)
+        content_type = _CONTENT_TYPES.get(ext.lower(), "application/octet-stream")
+        with open(file_path, "rb") as f:
+            body = f.read()
+        self.send_response(200)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
     def do_POST(self):
         try:
             # 1. リクエストの読み取り
