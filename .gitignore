@@ -1,0 +1,25 @@
+# Node / Web
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+.tox/
+.env
+.venv
+env/
+venv/
+
+# Vercel
+.vercel/
+
+# OS
+.DS_Store
+Thumbs.db

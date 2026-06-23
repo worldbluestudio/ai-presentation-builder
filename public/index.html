@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Presentation Builder</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-effects">
+        <div class="glow glow-1"></div>
+        <div class="glow glow-2"></div>
+    </div>
+
+    <main class="container">
+        <header>
+            <div class="badge">Gemini 3.5 Flash & Nano Banana 2</div>
+            <h1>Generate <span>Premium</span><br>Presentations in Seconds</h1>
+            <p>入力されたテキストから、構成案、高品質な画像、プロフェッショナルなデザインのPowerPoint資料を全自動で生成します。</p>
+        </header>
+
+        <section class="card form-container" id="formSection">
+            <form id="generateForm">
+                <div class="form-group">
+                    <label for="prompt">プレゼンの目的・内容を詳しく入力してください</label>
+                    <textarea id="prompt" name="prompt" rows="6" placeholder="例: 小売企業向けに、新商品「チャイグミ」の取扱提案を行うプレゼン資料を作りたい。本場のスパイスを使っていること、大人の衝動買いを狙えることなどをアピールしたい。" required></textarea>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col">
+                        <label for="theme">デザインテーマ</label>
+                        <select id="theme" name="theme">
+                            <option value="auto">自動おまかせ (推奨)</option>
+                            <option value="midnight">Midnight (ダーク/サイバー)</option>
+                            <option value="elegance">Elegance (上品/高級感)</option>
+                            <option value="corporate">Corporate (信頼/ビジネス)</option>
+                            <option value="nature">Nature (自然/オーガニック)</option>
+                            <option value="creative">Creative (ポップ/エネルギッシュ)</option>
+                            <option value="warm">Warm (温かみ/ホスピタリティ)</option>
+                            <option value="minimal">Minimal (クリーン/モダン)</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="slide_count">スライド枚数 (目安)</label>
+                        <select id="slide_count" name="slide_count">
+                            <option value="5">5枚 (短時間の提案用)</option>
+                            <option value="8" selected>8枚 (標準的な提案用)</option>
+                            <option value="12">12枚 (詳細な提案用)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn primary" id="submitBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"></path><path d="m14 7 3 3"></path><path d="M5 6v4"></path><path d="M19 14v4"></path><path d="M10 2v2"></path><path d="M7 8H3"></path><path d="M21 16h-4"></path><path d="M11 3H9"></path></svg>
+                    <span>PowerPointを生成する</span>
+                </button>
+            </form>
+        </section>
+
+        <section class="card loading-container hidden" id="loadingSection">
+            <div class="loader"></div>
+            <h2 id="loadingTitle">AIが思考しています...</h2>
+            <p id="loadingDesc">Gemini 3.5 Flash が最適なプレゼン構成を検討しています。（最大60秒程度かかります）</p>
+            <div class="steps">
+                <div class="step active" id="step1">1. 構成案の作成</div>
+                <div class="step" id="step2">2. スライド画像の生成</div>
+                <div class="step" id="step3">3. PowerPointのビルド</div>
+            </div>
+        </section>
+
+        <section class="card result-container hidden" id="resultSection">
+            <div class="success-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            </div>
+            <h2>生成完了！</h2>
+            <p>PowerPointファイルの準備が整いました。</p>
+            <button class="btn success" id="downloadBtn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span>ダウンロード (.pptx)</span>
+            </button>
+            <button class="btn secondary mt-4" id="resetBtn">新しく作る</button>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
