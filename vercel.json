@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/**/*.py": {
+    "api/generate.py": {
       "maxDuration": 60
     }
   },
