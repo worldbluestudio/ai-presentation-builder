@@ -5,15 +5,11 @@ import time
 from http.server import BaseHTTPRequestHandler
 from pptx import Presentation
 
-# Vercel環境で相対インポートを解決するため、sys.pathを追加
-import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 from google import genai
 from google.genai import types
 
-from api.src.theme import get_theme, list_themes
-from api.src.slide_builder import SLIDE_BUILDERS
+from src.theme import get_theme, list_themes
+from src.slide_builder import SLIDE_BUILDERS
 
 class handler(BaseHTTPRequestHandler):
     
