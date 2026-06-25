@@ -34,6 +34,24 @@ _CONTENT_TYPES = {
 }
 
 
+def _is_retryable_model_error(exc):
+    message = str(exc).upper()
+    return any(code in message for code in ("503", "UNAVAILABLE", "429", "RESOURCE_EXHAUSTED"))
+
+
+def _generate_content_with_retry(client, *, retries=2, **kwargs):
+    last_error = None
+    for attempt in range(retries + 1):
+        try:
+            return client.models.generate_content(**kwargs)
+        except Exception as exc:
+            last_error = exc
+            if attempt >= retries or not _is_retryable_model_error(exc):
+                raise
+            time.sleep(1.5 * (attempt + 1))
+    raise last_error
+
+
 class handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
@@ -131,7 +149,8 @@ class handler(BaseHTTPRequestHandler):
                 "required": ["theme", "slides"]
             }
 
-            response_json = client.models.generate_content(
+            response_json = _generate_content_with_retry(
+                client,
                 model='gemini-3.5-flash',
                 contents=f"目的・内容:\n{user_prompt}\n\n希望スライド数: 約{slide_count}枚\n指定テーマ: {requested_theme}",
                 config=types.GenerateContentConfig(
@@ -160,7 +179,8 @@ class handler(BaseHTTPRequestHandler):
                 if img_prompt:
                     # 画像生成
                     try:
-                        img_response = client.models.generate_content(
+                        img_response = _generate_content_with_retry(
+                            client,
                             model='gemini-3.1-flash-image',
                             contents=img_prompt,
                             config=types.GenerateContentConfig(
@@ -218,7 +238,13 @@ class handler(BaseHTTPRequestHandler):
             import traceback
             error_msg = f"Internal Server Error: {str(e)}\n{traceback.format_exc()}"
             print(error_msg)
-            self.send_error_response(500, str(e))
+            if _is_retryable_model_error(e):
+                self.send_error_response(
+                    503,
+                    "The AI model is temporarily busy. Please try again in a moment.",
+                )
+            else:
+                self.send_error_response(500, str(e))
             
     def send_error_response(self, code, message):
         self.send_response(code)
