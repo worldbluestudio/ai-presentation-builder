@@ -58,7 +58,7 @@ class handler(BaseHTTPRequestHandler):
         # On Vercel this function is the single catch-all entrypoint, so it must
         # also serve the static frontend bundled from the public/ directory.
         path = self.path.split("?", 1)[0]
-        if path in ("", "/"):
+        if path in ("", "/", "/api/generate"):
             path = "/index.html"
 
         file_path = os.path.normpath(os.path.join(PUBLIC_DIR, path.lstrip("/")))
