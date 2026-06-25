@@ -63,7 +63,14 @@ class handler(BaseHTTPRequestHandler):
 
         file_path = os.path.normpath(os.path.join(PUBLIC_DIR, path.lstrip("/")))
         # Guard against path traversal outside public/.
-        if not file_path.startswith(PUBLIC_DIR) or not os.path.isfile(file_path):
+        if not file_path.startswith(PUBLIC_DIR):
+            self.send_error_response(404, "Not Found")
+            return
+        if not os.path.isfile(file_path) and not path.startswith("/api/"):
+            fallback_path = os.path.join(PUBLIC_DIR, "index.html")
+            if os.path.isfile(fallback_path):
+                file_path = fallback_path
+        if not os.path.isfile(file_path):
             self.send_error_response(404, "Not Found")
             return
 
